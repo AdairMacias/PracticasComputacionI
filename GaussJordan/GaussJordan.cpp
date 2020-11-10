@@ -78,39 +78,94 @@ void ImprimirMatriz(matriz& miMatriz)
 No regresa ningún valor.*/
 
 template <typename matriz>
-void ImprimirSolucion(matriz& miMatriz)
+void ImprimirSolucion(matriz & miMatriz)
 {
+   cout << endl;
     int variables = miMatriz.size();
-    int columnas = variables + 1;
-    float x[50];
-    cout << "Solución:" << endl;
-    for (int i = 0; i <= variables; i++)
+
+    for (int i = 0; i < variables; i++)
     {
-        x[i] = miMatriz[i][columnas] / miMatriz[i][i];
-        cout << "x" << i << " = " << x[i] << endl;
+        if (miMatriz[i][i] == 0)
+        {
+            if (miMatriz[i][variables] != 0)
+            {
+                cout << "La matriz no tiene solución" << endl;
+            }
+            else if (miMatriz[i][variables] == 0)
+            {
+                cout << "El sistema tiene ecuaciones equivalentes" << endl;
+            }
+        }
+        else
+        {
+            cout << "x" << i << " = " << miMatriz[i][variables] << endl;
+        }
     }
 }
-
-
 /*
 Implementa el algoritmo de Gauss-Jordan sobre 'miMatriz', finalizando en ella la solución del algoritmo.
 No regresa ningún valor.
 */
 template <typename matriz>
-void GaussJordan(matriz& miMatriz)
+void GaussJordan(matriz & miMatriz)
 {
-    int divisor = 0;
-    int variables = miMatriz.size();
-    int columnas = variables + 1;
-    for (int j = 0; j <= variables; j++)
-        for (int i = 0; i <= variables; i++)
-            if (i != j)
+   int variables = miMatriz.size();
+
+    for (int i = 0; i < variables; i++)
+    {
+        if (miMatriz[i][i] == 0)
+        {
+            array <array<int, 4>, 3> temp = {};
+
+            for (int k = i + 1; k < variables; k++)
             {
-                divisor = miMatriz[i][j] / miMatriz[j][j];
-                for (int r = 0; r <= columnas; r++) //Utilizo r porque cambio los valores
+                for (int j = 0; j <= variables; j++)
                 {
-                    miMatriz[i][r] = miMatriz[i][r] - (divisor * miMatriz[j][r]);
+                    temp[i][j] = miMatriz[i][j];
+                    miMatriz[i][j] = miMatriz[k][j];
+                    miMatriz[k][j] = temp[i][j];
                 }
             }
-            
+        }
+
+        if (miMatriz[i][i] == 0)
+        {
+            cout << endl << "Hay mas ecuaciones que variables, defina otro valor para variables" << endl;
+            break;
+        }
+
+    }
+
+    for (int i = 0; i < variables; i++)
+    {
+        float a = miMatriz[i][i];
+
+        for (int j = 0; j <= variables; j++)
+        {
+            miMatriz[i][j] = miMatriz[i][j] / a;
+        }
+
+        for (int k = i + 1; k < variables; k++)
+        {
+            float b = -miMatriz[k][i];
+            for (int j = 0; j <= variables; j++)
+            {
+                float z = miMatriz[i][j] * b;
+                miMatriz[k][j] += z;
+            }
+        }
+    }
+
+    for (int i = variables - 1; i >= 0; i--)
+    {
+        for (int k = i - 1; k >= 0; k--)
+        {
+            float b = -miMatriz[k][i];
+            for (int j = variables; j >= 0; j--)
+            {
+                float z = miMatriz[i][j] * b;
+                miMatriz[k][j] += z;
+            }
+        }
+    }
 }
