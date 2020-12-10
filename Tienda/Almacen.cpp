@@ -1,4 +1,4 @@
-#include "Almacen.h"
+        #include "Almacen.h"
 	
 
 	bool Almacen::ModificarInventarioArticulo(Articulo* artPtr, int cantidad)
